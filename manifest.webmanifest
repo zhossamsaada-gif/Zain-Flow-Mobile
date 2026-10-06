@@ -1,0 +1,13 @@
+{
+  "name": "أصناف Zain Flow",
+  "short_name": "أصناف Zain",
+  "description": "إدارة أصناف Zain Flow من الموبايل",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f5",
+  "theme_color": "#102f2b",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
