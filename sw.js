@@ -1,4 +1,4 @@
-const CACHE='zain-flow-mobile-shell-v8-scanner';
+const CACHE='zain-flow-mobile-shell-v9-session-fix';
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',event=>event.waitUntil(self.clients.claim()));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(['./','./index.html','./manifest.webmanifest','./icon.svg','./scanner.js','./vendor/zxing-browser.min.js']))));
