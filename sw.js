@@ -1,4 +1,4 @@
-const CACHE='zain-flow-mobile-shell-v11-online-only';
+const CACHE='zain-flow-mobile-shell-v13-session-fixed';
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',event=>event.waitUntil(self.clients.claim()));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(['./','./index.html','./manifest.webmanifest','./icon.svg','./invoices.js','./online-policy.js','./vendor/supabase.min.js','./scanner.js','./vendor/zxing-browser.min.js']))));
