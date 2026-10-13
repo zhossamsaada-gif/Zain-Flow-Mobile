@@ -1,4 +1,4 @@
-const CACHE='zain-flow-mobile-shell-v21-available-stock';
+const CACHE='zain-flow-mobile-shell-v22-barcode-fix';
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',event=>event.waitUntil(self.clients.claim()));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(['./','./index.html','./manifest.webmanifest','./icon.svg','./invoices.js','./online-policy.js','./vendor/supabase.min.js','./scanner.js','./vendor/zxing-browser.min.js']))));
