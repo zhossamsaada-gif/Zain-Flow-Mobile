@@ -51,7 +51,7 @@
  $('zf-confirm').onclick=confirmInvoice;$('zf-edit-again').onclick=()=>{lastReceipt=null;render();changeStep(1)};
  window.addEventListener('zf-session-changed',initialise);window.addEventListener('zf-catalog-changed',()=>{if(!root.classList.contains('hidden')){search();totals();if(step===2)payment()}});window.addEventListener('online',()=>{initialise();sync()});window.addEventListener('offline',()=>{if(channel)app.client.removeChannel(channel);channel=null;info('العرض والبحث متاحان؛ الحفظ والتأكيد يحتاجان إنترنت.');payment()});document.addEventListener('visibilitychange',()=>{if(!document.hidden){initialise();startRealtime();sync();if(Date.now()-lastRecovery>30000)scheduleRecovery()}});window.addEventListener('pagehide',()=>{if(channel)app.client.removeChannel(channel);channel=null});
  setInterval(()=>{if(app.online&&ready&&!document.hidden){startRealtime();sync();if(Date.now()-lastRecovery>30000)scheduleRecovery()}},10000);
- window.ZFInvoices={sync,initialise,hasDraftProduct:ids=>Object.values(drafts).some(d=>d.rows.some(r=>ids.includes(r.id))),get pending(){return outbox},get draft(){return current()}};initialise();
+ window.ZFInvoices={sync,initialise,hasDraftProduct:ids=>Object.values(drafts).some(d=>d.rows.some(r=>ids.includes(r.id))),get writing(){return preparing||syncing},get pending(){return outbox},get draft(){return current()}};initialise();
 })();
 
 

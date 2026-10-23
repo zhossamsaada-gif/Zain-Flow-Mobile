@@ -52,3 +52,5 @@ begin
  return v_result;
 end $function$
 
+revoke all on function public.mobile_save_invoice(uuid,text,uuid,uuid,jsonb,uuid,text,date,numeric,numeric,text,boolean) from public,anon;
+grant execute on function public.mobile_save_invoice(uuid,text,uuid,uuid,jsonb,uuid,text,date,numeric,numeric,text,boolean) to authenticated;

@@ -51,3 +51,5 @@ begin
  return v_result;
 end $function$
 
+revoke all on function public.online_catalog_commit(uuid,uuid,jsonb) from public,anon;
+grant execute on function public.online_catalog_commit(uuid,uuid,jsonb) to authenticated;

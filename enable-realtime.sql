@@ -13,9 +13,25 @@ begin
     from pg_publication_tables
     where pubname = 'supabase_realtime'
       and schemaname = 'public'
-      and tablename = 'products'
+      and tablename = 'product_catalog'
   ) then
-    alter publication supabase_realtime add table public.products;
+    alter publication supabase_realtime add table public.product_catalog;
+  end if;
+end
+$$;
+
+
+-- مزامنة مخزون الفروع لحظيًا مع تطبيق الموبايل.
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'branch_stock'
+  ) then
+    alter publication supabase_realtime add table public.branch_stock;
   end if;
 end
 $$;
