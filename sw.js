@@ -1,4 +1,4 @@
-const CACHE='zain-flow-mobile-shell-v33-audit-fixes';
+const CACHE='zain-flow-mobile-shell-v35-quick-price';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon.svg','./move-product.js','./invoices.js','./online-policy.js','./vendor/supabase.min.js','./scanner.js','./vendor/zxing-browser.min.js'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
