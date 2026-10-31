@@ -125,6 +125,33 @@
     el('scannerZoom').classList.toggle('hidden', !capabilities.zoom || capabilities.zoom.max <= 1);
     el('scannerZoom').textContent = 'تقريب 2×';
   }
+  const cameraKey = 'zf-barcode-camera-v1';
+  const cameraSelect = document.createElement('select');
+  cameraSelect.setAttribute('aria-label', 'اختيار كاميرا الباركود');
+  cameraSelect.style.cssText = 'max-width:100%;padding:10px;margin:8px 0;border-radius:8px';
+  el('scannerMessage').insertAdjacentElement('afterend', cameraSelect);
+  cameraSelect.hidden = true;
+  cameraSelect.onchange = () => {
+    const target = session?.target;
+    try { localStorage.setItem(cameraKey, cameraSelect.value); } catch {}
+    if (target) startScanner(target);
+  };
+  async function listCameras(s) {
+    try {
+      const devices = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'videoinput');
+      if (!active(s)) return;
+      cameraSelect.replaceChildren();
+      const automatic = document.createElement('option');
+      automatic.value = ''; automatic.textContent = 'الكاميرا الخلفية تلقائيًا'; cameraSelect.append(automatic);
+      devices.forEach((device, i) => {
+        const option = document.createElement('option'); option.value = device.deviceId;
+        option.textContent = device.label || 'كاميرا ' + (i + 1); cameraSelect.append(option);
+      });
+      let saved = ''; try { saved = localStorage.getItem(cameraKey) || ''; } catch {}
+      cameraSelect.value = devices.some(d => d.deviceId === saved) ? saved : '';
+      cameraSelect.hidden = devices.length < 2;
+    } catch { cameraSelect.hidden = true; }
+  }
   async function startScanner(target) {
     if (!target) return;
     stopScanner(); unlockSound();
@@ -151,13 +178,15 @@
         } catch {}
       }
       if (!s.reader && !s.detector) throw new Error('تعذر تحميل قارئ الباركود. أعد تحميل التطبيق أثناء الاتصال بالإنترنت.');
-      let stream;
+      let stream, savedCamera = '';
+      try { savedCamera = localStorage.getItem(cameraKey) || ''; } catch {}
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 }, frameRate: { ideal: 30, max: 30 } } });
+        stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { ...(savedCamera ? { deviceId: { exact: savedCamera } } : { facingMode: { ideal: 'environment' } }), width: { ideal: 1920 }, height: { ideal: 1080 }, frameRate: { ideal: 30, max: 30 } } });
       } catch (error) {
         if (!active(s)) return;
         if (!['OverconstrainedError', 'NotFoundError'].includes(error.name)) throw error;
-        stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
+        try { localStorage.removeItem(cameraKey); } catch {}
+        stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' } } });
       }
       // Cancelling while the permission prompt is open must not leave a camera running.
       if (!active(s)) { stream.getTracks().forEach(track => track.stop()); return; }
@@ -165,6 +194,7 @@
       const video = el('scannerVideo'); video.srcObject = stream;
       await video.play(); if (!active(s)) return;
       await configureTrack(s); if (!active(s)) return;
+      await listCameras(s); if (!active(s)) return;
       message('ضع الباركود كاملًا داخل الإطار، وثبّت الكاميرا. يمكن مسحه أفقيًا أو رأسيًا.');
       scan(s);
     } catch (error) {
